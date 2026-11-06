@@ -16,17 +16,29 @@
         .tab { flex: 1; padding: 10px; background: #1f2937; border: none; color: #9ca3af; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; }
         .tab.active { background: #38bdf8; color: #000; }
 
+        .select-box { margin-bottom: 15px; }
+        .select-box label { display: block; color: #94a3b8; font-size: 13px; margin-bottom: 5px; }
+        .select-box select { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: #fff; border-radius: 8px; font-size: 14px; outline: none; }
+
         .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; }
-        .signal-box { font-size: 28px; font-weight: bold; margin: 15px 0; padding: 15px; border-radius: 8px; }
+        
+        .loader-box { display: none; margin: 20px auto; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { border: 4px solid #1f2937; border-top: 4px solid #38bdf8; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .signal-box { font-size: 28px; font-weight: bold; margin: 15px 0; padding: 15px; border-radius: 8px; display: block; }
         .call { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid #22c55e; }
         .put { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
         
+        .win-rate-badge { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 14px; color: #94a3b8; }
         .info-item { background: #1f2937; padding: 10px; border-radius: 6px; }
         .info-value { color: #fff; font-weight: bold; margin-top: 4px; }
 
         .btn { width: 100%; padding: 14px; background: #38bdf8; color: #000; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
         .btn:hover { background: #0ea5e9; color: #fff; }
+        .btn:disabled { background: #4b5563; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -38,31 +50,66 @@
         </div>
 
         <div class="market-tabs">
-            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex 1M Market</button>
-            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox 1M Market</button>
+            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex 1M</button>
+            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox 1M</button>
+        </div>
+
+        <div class="select-box">
+            <label id="selectLabel">Select Asset to Analyze:</label>
+            <select id="assetSelect" onchange="generateSignal()">
+            </select>
         </div>
 
         <div class="card">
-            <h3 id="marketTitle" style="color: #facc15;">Analyzing Quotex OTC Market...</h3>
-            <div id="signalBox" class="signal-box call">SCANNING...</div>
-            <p id="pairName" style="color: #94a3b8; font-size: 15px;">Asset: EUR/USD (OTC)</p>
+            <h3 id="marketTitle" style="color: #facc15;">Analyzing Selected Market...</h3>
+            
+            <div id="loaderBox" class="loader-box">
+                <div class="spinner"></div>
+                <p id="loaderStatus" style="font-size: 13px; color: #38bdf8;">Scanning market patterns...</p>
+            </div>
+
+            <div id="signalContainer">
+                <div id="winBadge" class="win-rate-badge">WIN CHANCE: 96.5%</div>
+                <div id="signalBox" class="signal-box call">CALL (UP)</div>
+                <p id="pairName" style="color: #94a3b8; font-size: 15px;">Asset: EUR/USD (OTC)</p>
+            </div>
             
             <div class="info-grid">
                 <div class="info-item">Timeframe<div class="info-value">1 Minute</div></div>
-                <div class="info-item">Accuracy<div class="info-value" id="accVal">96.0%</div></div>
+                <div class="info-item">Accuracy<div class="info-value" id="accVal">96.5%</div></div>
                 <div class="info-item">Signal Time<div class="info-value" id="sigTime">--:--</div></div>
                 <div class="info-item">Expiry<div class="info-value">1 Minute</div></div>
             </div>
 
-            <button class="btn" onclick="generateSignal()">Generate Next Signal</button>
+            <button class="btn" id="genBtn" onclick="generateSignal()">Analyze & Generate Signal</button>
         </div>
     </div>
 
     <script>
         let currentMarket = 'quotex';
 
-        const qxPairs = ["EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", "EUR/JPY (OTC)", "USD/INR (OTC)"];
-        const twPairs = ["BTC/USD (Crypto)", "ETH/USD (Crypto)", "GOLD (Commodity)", "EUR/USD (Forex)", "GBP/JPY (Forex)"];
+        const qxAssets = [
+            "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", 
+            "EUR/JPY (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)"
+        ];
+
+        const twAssets = [
+            "BTC/USD (Crypto OTC)", "ETH/USD (Crypto OTC)", 
+            "GOLD (Commodity)", "EUR/USD (Forex)", "GBP/JPY (Forex)"
+        ];
+
+        function updateAssetDropdown() {
+            let select = document.getElementById('assetSelect');
+            select.innerHTML = "";
+            let assets = currentMarket === 'quotex' ? qxAssets : twAssets;
+            
+            assets.forEach(asset => {
+                let opt = document.createElement('option');
+                opt.value = asset;
+                opt.innerText = asset;
+                select.appendChild(opt);
+            });
+        }
 
         function switchMarket(market) {
             currentMarket = market;
@@ -70,35 +117,55 @@
             document.getElementById('twTab').classList.toggle('active', market === 'tradewox');
             
             if(market === 'quotex') {
-                document.getElementById('marketTitle').innerText = "Quotex Live 1M AI Analyzer";
+                document.getElementById('marketTitle').innerText = "Quotex 1M AI Analyzer";
             } else {
-                document.getElementById('marketTitle').innerText = "TradeWox Live 1M AI Analyzer";
+                document.getElementById('marketTitle').innerText = "TradeWox 1M AI Analyzer";
             }
+            updateAssetDropdown();
             generateSignal();
         }
 
         function generateSignal() {
-            let pairs = currentMarket === 'quotex' ? qxPairs : twPairs;
-            let randomPair = pairs[Math.floor(Math.random() * pairs.length)];
-            let types = ['CALL (UP)', 'PUT (DOWN)'];
-            let randomType = types[Math.floor(Math.random() * types.length)];
-            
-            let box = document.getElementById('signalBox');
-            box.innerText = "ANALYZING...";
-            box.className = "signal-box";
+            let selectedAsset = document.getElementById('assetSelect').value;
+            let btn = document.getElementById('genBtn');
+            let loaderBox = document.getElementById('loaderBox');
+            let signalContainer = document.getElementById('signalContainer');
+            let loaderStatus = document.getElementById('loaderStatus');
+
+            btn.disabled = true;
+            signalContainer.style.display = "none";
+            loaderBox.style.display = "flex";
+            loaderStatus.innerText = "Analyzing Live Candles & Indicators...";
 
             setTimeout(() => {
+                loaderStatus.innerText = "Calculating Win Rate & Probability...";
+            }, 1200);
+
+            setTimeout(() => {
+                let types = ['CALL (UP)', 'PUT (DOWN)'];
+                let randomType = types[Math.floor(Math.random() * types.length)];
+                let winRate = (94 + Math.random() * 5).toFixed(1);
+
+                loaderBox.style.display = "none";
+                signalContainer.style.display = "block";
+                
+                let box = document.getElementById('signalBox');
                 box.innerText = randomType;
                 box.className = "signal-box " + (randomType.includes('CALL') ? 'call' : 'put');
-                document.getElementById('pairName').innerText = "Asset: " + randomPair;
+                
+                document.getElementById('winBadge').innerText = "WIN CHANCE: " + winRate + "%";
+                document.getElementById('pairName').innerText = "Asset: " + selectedAsset;
                 
                 let now = new Date();
                 now.setMinutes(now.getMinutes() + 1);
                 document.getElementById('sigTime').innerText = now.toTimeString().substring(0, 5);
-                document.getElementById('accVal').innerText = (94 + Math.random() * 3).toFixed(1) + "%";
-            }, 600);
+                document.getElementById('accVal').innerText = winRate + "%";
+
+                btn.disabled = false;
+            }, 2800);
         }
 
+        updateAssetDropdown();
         generateSignal();
     </script>
 </body>

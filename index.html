@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jimini AI Bot Pro - Access Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0f19; color: #fff; text-align: center; padding: 20px; }
+        .container { max-width: 480px; margin: 20px auto; background: #161e2e; padding: 25px; border-radius: 16px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; font-size: 26px; margin-bottom: 8px; }
+        .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+        
+        .live-status { display: inline-flex; align-items: center; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; padding: 8px 16px; border-radius: 20px; margin-bottom: 20px; }
+        .dot { height: 10px; width: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; animation: blink 1.5s infinite; }
+        .counter-text { color: #4ade80; font-weight: bold; font-size: 14px; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .step-box { background: #0f172a; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; text-align: left; }
+        .step-box h3 { color: #facc15; font-size: 15px; margin-bottom: 4px; }
+        .step-box p { color: #94a3b8; font-size: 12px; margin-bottom: 10px; }
+        
+        .btn { display: block; width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; text-decoration: none; font-weight: bold; border-radius: 8px; text-align: center; transition: 0.3s; }
+        .btn:hover { background: #0ea5e9; }
+        
+        .btn-quotex { background: #e11d48; color: #fff; }
+        .btn-quotex:hover { background: #be123c; }
+        
+        .btn-tradewox { background: #6366f1; color: #fff; }
+        .btn-tradewox:hover { background: #4f46e5; }
+
+        .btn-tiktok { background: #fe2c55; color: #fff; }
+        .btn-tiktok:hover { background: #e02649; }
+
+        .next-btn { background: #22c55e; color: #fff; font-size: 16px; margin-top: 15px; border: none; cursor: pointer; width: 100%; padding: 14px; border-radius: 8px; font-weight: bold; }
+        .next-btn:hover { background: #16a34a; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Jimini AI Bot Pro</h1>
+        <p class="subtitle">Complete all 4 steps to unlock VIP Trading Signals</p>
+
+        <div class="live-status">
+            <span class="dot"></span>
+            <span class="counter-text"><span id="userCount">5,024</span> Active Users Connected</span>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 1: Quotex Account Creation ($10)</h3>
+            <p>Create account via referral link & deposit $10 minimum.</p>
+            <a href="https://quotex.com" target="_blank" class="btn btn-quotex">Open Quotex Account</a>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 2: TradeWox Account Creation</h3>
+            <p>Register via our official link for signals integration.</p>
+            <a href="https://tradewox.com" target="_blank" class="btn btn-tradewox">Open TradeWox Account</a>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 3: Subscribe YouTube</h3>
+            <p>Subscribe to official channel for updates & VIP keys.</p>
+            <a href="https://youtube.com" target="_blank" class="btn">Subscribe YouTube Channel</a>
+        </div>
+
+        <div class="step-box">
+            <h3>Step 4: Follow TikTok</h3>
+            <p>Follow our official TikTok account for instant alerts.</p>
+            <a href="https://tiktok.com" target="_blank" class="btn btn-tiktok">Follow on TikTok</a>
+        </div>
+
+        <button class="next-btn" onclick="goToPortal()">I Have Completed All Steps</button>
+    </div>
+
+    <script>
+        let count = 5024;
+        setInterval(() => {
+            let change = Math.floor(Math.random() * 5) - 2;
+            count += change;
+            if(count < 5000) count = 5000;
+            document.getElementById('userCount').innerText = count.toLocaleString();
+        }, 3000);
+
+        function goToPortal() {
+            window.location.href = "portal.html";
+        }
+    </script>
+</body>
+</html>

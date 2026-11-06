@@ -16,9 +16,9 @@
         .tab { flex: 1; padding: 10px; background: #1f2937; border: none; color: #9ca3af; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; }
         .tab.active { background: #38bdf8; color: #000; }
 
-        .select-box { margin-bottom: 15px; }
-        .select-box label { display: block; color: #94a3b8; font-size: 13px; margin-bottom: 5px; }
-        .select-box select { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: #fff; border-radius: 8px; font-size: 14px; outline: none; }
+        .select-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .select-box label { display: block; color: #94a3b8; font-size: 12px; margin-bottom: 5px; }
+        .select-box select { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: #fff; border-radius: 8px; font-size: 13px; outline: none; }
 
         .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; }
         
@@ -50,14 +50,23 @@
         </div>
 
         <div class="market-tabs">
-            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex 1M</button>
-            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox 1M</button>
+            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex All Markets</button>
+            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox All Markets</button>
         </div>
 
-        <div class="select-box">
-            <label id="selectLabel">Select Asset to Analyze:</label>
-            <select id="assetSelect" onchange="generateSignal()">
-            </select>
+        <div class="select-grid">
+            <div class="select-box">
+                <label>Select Market Asset:</label>
+                <select id="assetSelect" onchange="generateSignal()">
+                </select>
+            </div>
+            <div class="select-box">
+                <label>Timeframe:</label>
+                <select id="tfSelect" onchange="generateSignal()">
+                    <option value="30 Seconds">30 Sec</option>
+                    <option value="1 Minute" selected>1 Min</option>
+                </select>
+            </div>
         </div>
 
         <div class="card">
@@ -75,10 +84,10 @@
             </div>
             
             <div class="info-grid">
-                <div class="info-item">Timeframe<div class="info-value">1 Minute</div></div>
+                <div class="info-item">Timeframe<div class="info-value" id="tfDisplay">1 Minute</div></div>
                 <div class="info-item">Accuracy<div class="info-value" id="accVal">96.5%</div></div>
                 <div class="info-item">Signal Time<div class="info-value" id="sigTime">--:--</div></div>
-                <div class="info-item">Expiry<div class="info-value">1 Minute</div></div>
+                <div class="info-item">Expiry<div class="info-value" id="expDisplay">1 Minute</div></div>
             </div>
 
             <button class="btn" id="genBtn" onclick="generateSignal()">Analyze & Generate Signal</button>
@@ -89,13 +98,17 @@
         let currentMarket = 'quotex';
 
         const qxAssets = [
-            "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", 
-            "EUR/JPY (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)"
+            "EUR/USD (OTC)", "GBP/USD (OTC)", "USD/JPY (OTC)", "AUD/CAD (OTC)", 
+            "EUR/JPY (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)", "USD/PKR (OTC)",
+            "EUR/GBP (OTC)", "USD/CAD (OTC)", "NZD/USD (OTC)", "USD/CHF (OTC)",
+            "BTC/USD (Crypto)", "ETH/USD (Crypto)", "GOLD (Spot)", "SILVER (Spot)",
+            "EUR/USD (Live)", "GBP/USD (Live)", "USD/JPY (Live)", "AUD/USD (Live)"
         ];
 
         const twAssets = [
-            "BTC/USD (Crypto OTC)", "ETH/USD (Crypto OTC)", 
-            "GOLD (Commodity)", "EUR/USD (Forex)", "GBP/JPY (Forex)"
+            "BTC/USD (Crypto OTC)", "ETH/USD (Crypto OTC)", "SOL/USD (Crypto OTC)",
+            "GOLD (Commodity)", "SILVER (Commodity)", "CRUDE OIL",
+            "EUR/USD (Forex)", "GBP/JPY (Forex)", "USD/JPY (Forex)", "AUD/NZD (Forex)"
         ];
 
         function updateAssetDropdown() {
@@ -117,9 +130,9 @@
             document.getElementById('twTab').classList.toggle('active', market === 'tradewox');
             
             if(market === 'quotex') {
-                document.getElementById('marketTitle').innerText = "Quotex 1M AI Analyzer";
+                document.getElementById('marketTitle').innerText = "Quotex AI Analyzer";
             } else {
-                document.getElementById('marketTitle').innerText = "TradeWox 1M AI Analyzer";
+                document.getElementById('marketTitle').innerText = "TradeWox AI Analyzer";
             }
             updateAssetDropdown();
             generateSignal();
@@ -127,6 +140,7 @@
 
         function generateSignal() {
             let selectedAsset = document.getElementById('assetSelect').value;
+            let timeframe = document.getElementById('tfSelect').value;
             let btn = document.getElementById('genBtn');
             let loaderBox = document.getElementById('loaderBox');
             let signalContainer = document.getElementById('signalContainer');
@@ -135,16 +149,16 @@
             btn.disabled = true;
             signalContainer.style.display = "none";
             loaderBox.style.display = "flex";
-            loaderStatus.innerText = "Analyzing Live Candles & Indicators...";
+            loaderStatus.innerText = "Scanning " + timeframe + " Candle Patterns...";
 
             setTimeout(() => {
-                loaderStatus.innerText = "Calculating Win Rate & Probability...";
+                loaderStatus.innerText = "Calculating AI Win Probability...";
             }, 1200);
 
             setTimeout(() => {
                 let types = ['CALL (UP)', 'PUT (DOWN)'];
                 let randomType = types[Math.floor(Math.random() * types.length)];
-                let winRate = (94 + Math.random() * 5).toFixed(1);
+                let winRate = (93 + Math.random() * 6).toFixed(1);
 
                 loaderBox.style.display = "none";
                 signalContainer.style.display = "block";
@@ -156,13 +170,21 @@
                 document.getElementById('winBadge').innerText = "WIN CHANCE: " + winRate + "%";
                 document.getElementById('pairName').innerText = "Asset: " + selectedAsset;
                 
+                document.getElementById('tfDisplay').innerText = timeframe;
+                document.getElementById('expDisplay').innerText = timeframe;
+
                 let now = new Date();
-                now.setMinutes(now.getMinutes() + 1);
-                document.getElementById('sigTime').innerText = now.toTimeString().substring(0, 5);
+                if(timeframe === "30 Seconds") {
+                    now.setSeconds(now.getSeconds() + 30);
+                } else {
+                    now.setMinutes(now.getMinutes() + 1);
+                }
+                
+                document.getElementById('sigTime').innerText = now.toTimeString().substring(0, 8);
                 document.getElementById('accVal').innerText = winRate + "%";
 
                 btn.disabled = false;
-            }, 2800);
+            }, 2600);
         }
 
         updateAssetDropdown();

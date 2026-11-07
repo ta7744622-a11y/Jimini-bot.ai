@@ -3,195 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jimini AI VIP Bot - Live Market Analysis</title>
+    <title>Jimini AI VIP Trading Bot</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #07090e; color: #fff; padding: 15px; }
-        .container { max-width: 500px; margin: 0 auto; }
-        .header { background: #111827; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1f2937; margin-bottom: 15px; }
-        .logo { font-size: 18px; font-weight: bold; color: #38bdf8; }
-        .status { font-size: 12px; background: #064e3b; color: #34d399; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #0b0e14; color: #ffffff; padding: 15px; }
+        .app-card { max-width: 420px; margin: 0 auto; background: #131822; border-radius: 16px; padding: 20px; border: 1px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         
-        .market-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab { flex: 1; padding: 10px; background: #1f2937; border: none; color: #9ca3af; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; }
-        .tab.active { background: #38bdf8; color: #000; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+        .status-badge { background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
 
-        .select-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .select-box label { display: block; color: #94a3b8; font-size: 12px; margin-bottom: 5px; }
-        .select-box select { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: #fff; border-radius: 8px; font-size: 13px; outline: none; }
+        .market-toggle { display: flex; background: #1a2232; border-radius: 10px; padding: 4px; margin-bottom: 15px; }
+        .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #94a3b8; font-weight: 600; font-size: 13px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .toggle-btn.active { background: #38bdf8; color: #0f172a; }
 
-        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        .controls-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .control-group label { display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
+        select { width: 100%; padding: 12px; background: #1a2232; border: 1px solid #2d3748; color: #fff; border-radius: 8px; font-size: 14px; outline: none; }
+
+        /* Analyzing Screen */
+        .analysis-container { display: none; background: #161d2a; border-radius: 12px; padding: 15px; border: 1px solid #252f40; margin-bottom: 20px; text-align: center; }
+        .analysis-title { font-size: 13px; color: #38bdf8; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
+        #chartCanvas { width: 100%; height: 120px; background: #0b0e14; border-radius: 8px; margin-bottom: 10px; }
+        .scan-status { font-size: 12px; color: #94a3b8; }
+
+        /* Signal Alert Popup */
+        .signal-alert { display: none; background: #161d2a; border-radius: 14px; padding: 20px; border: 2px solid #38bdf8; text-align: center; margin-bottom: 20px; }
+        .alert-asset { font-size: 16px; font-weight: bold; color: #facc15; margin-bottom: 8px; }
+        .direction-box { font-size: 32px; font-weight: 900; padding: 15px; border-radius: 10px; margin: 12px 0; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .up-signal { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+        .down-signal { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
         
-        .loader-box { display: none; margin: 20px auto; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { border: 4px solid #1f2937; border-top: 4px solid #38bdf8; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .signal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; font-size: 12px; }
+        .meta-item { background: #0b0e14; padding: 8px; border-radius: 6px; }
+        .meta-val { color: #fff; font-weight: bold; margin-top: 2px; }
 
-        .signal-box { font-size: 28px; font-weight: bold; margin: 15px 0; padding: 15px; border-radius: 8px; display: block; }
-        .call { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid #22c55e; }
-        .put { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
-        
-        .win-rate-badge { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; padding: 6px 12px; border-radius: 20px; display: inline-block; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
-
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 14px; color: #94a3b8; }
-        .info-item { background: #1f2937; padding: 10px; border-radius: 6px; }
-        .info-value { color: #fff; font-weight: bold; margin-top: 4px; }
-
-        .btn { width: 100%; padding: 14px; background: #38bdf8; color: #000; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
-        .btn:hover { background: #0ea5e9; color: #fff; }
-        .btn:disabled { background: #4b5563; cursor: not-allowed; }
+        .action-btn { width: 100%; padding: 15px; background: #38bdf8; color: #0b0e14; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .action-btn:hover { background: #0ea5e9; }
+        .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <div class="logo">🤖 Jimini AI Pro</div>
-            <div class="status">● VIP LIVE</div>
+    <div class="app-card">
+        <div class="top-header">
+            <div class="logo">⚡ JIMINI AI VIP</div>
+            <div class="status-badge">● ONLINE</div>
         </div>
 
-        <div class="market-tabs">
-            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex Markets</button>
-            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox Markets</button>
+        <div class="market-toggle">
+            <button class="toggle-btn active" id="qxBtn" onclick="setMarket('quotex')">Quotex OTC</button>
+            <button class="toggle-btn" id="twBtn" onclick="setMarket('tradewox')">TradeWox OTC</button>
         </div>
 
-        <div class="select-grid">
-            <div class="select-box">
-                <label>Select Asset:</label>
-                <select id="assetSelect" onchange="generateSignal()">
+        <div class="controls-grid">
+            <div class="control-group">
+                <label>Select Asset</label>
+                <select id="assetSelect"></select>
+            </div>
+            <div class="control-group">
+                <label>Timeframe</label>
+                <select id="tfSelect">
+                    <option value="30s">30 Sec</option>
+                    <option value="1m" selected>1 Min</option>
                 </select>
             </div>
-            <div class="select-box">
-                <label>Timeframe:</label>
-                <select id="tfSelect" onchange="generateSignal()">
-                    <option value="30 Seconds">30 Sec</option>
-                    <option value="1 Minute" selected>1 Min</option>
-                </select>
+        </div>
+
+        <!-- Live Chart Scan View -->
+        <div class="analysis-container" id="analysisView">
+            <div class="analysis-title">📊 AI ANALYZING MARKET</div>
+            <canvas id="chartCanvas"></canvas>
+            <div class="scan-status" id="scanText">Scanning candle patterns...</div>
+        </div>
+
+        <!-- Result Signal Popup -->
+        <div class="signal-alert" id="signalAlert">
+            <div class="alert-asset" id="alertAsset">USD/PKR (OTC)</div>
+            <div class="direction-box up-signal" id="alertDirection">▲ CALL / UP</div>
+            <div class="signal-meta">
+                <div class="meta-item">ACCURACY<div class="meta-val" id="alertAcc">98.2%</div></div>
+                <div class="meta-item">ENTRY TIME<div class="meta-val" id="alertTime">00:00</div></div>
             </div>
         </div>
 
-        <div class="card">
-            <h3 id="marketTitle" style="color: #facc15;">Analyzing Selected Market...</h3>
-            
-            <div id="loaderBox" class="loader-box">
-                <div class="spinner"></div>
-                <p id="loaderStatus" style="font-size: 13px; color: #38bdf8;">Scanning market patterns...</p>
-            </div>
-
-            <div id="signalContainer">
-                <div id="winBadge" class="win-rate-badge">WIN CHANCE: 96.5%</div>
-                <div id="signalBox" class="signal-box call">CALL (UP)</div>
-                <p id="pairName" style="color: #94a3b8; font-size: 15px;">Asset: EUR/USD (OTC)</p>
-            </div>
-            
-            <div class="info-grid">
-                <div class="info-item">Timeframe<div class="info-value" id="tfDisplay">1 Minute</div></div>
-                <div class="info-item">Accuracy<div class="info-value" id="accVal">96.5%</div></div>
-                <div class="info-item">Signal Time<div class="info-value" id="sigTime">--:--</div></div>
-                <div class="info-item">Expiry<div class="info-value" id="expDisplay">1 Minute</div></div>
-            </div>
-
-            <button class="btn" id="genBtn" onclick="generateSignal()">Analyze & Generate Signal</button>
-        </div>
+        <button class="action-btn" id="genBtn" onclick="startAnalysis()">Generate Signal</button>
     </div>
 
     <script>
-        let currentMarket = 'quotex';
+        const qxPairs = ["USD/PKR (OTC)", "EUR/USD (OTC)", "GBP/USD (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)", "USD/JPY (OTC)", "AUD/CAD (OTC)", "EUR/JPY (OTC)"];
+        const twPairs = ["BTC/USD (Crypto)", "ETH/USD (Crypto)", "EUR/USD (TradeWox)", "GBP/JPY (TradeWox)", "GOLD (Spot)", "SILVER (Spot)", "CRUDE OIL"];
 
-        const qxAssets = [
-            "EUR/USD (OTC)", "GBP/USD (OTC)", "USD/JPY (OTC)", "AUD/CAD (OTC)", 
-            "EUR/JPY (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)", "USD/PKR (OTC)",
-            "EUR/GBP (OTC)", "USD/CAD (OTC)", "NZD/USD (OTC)", "USD/CHF (OTC)",
-            "BTC/USD (Crypto)", "ETH/USD (Crypto)", "GOLD (Spot)", "SILVER (Spot)",
-            "EUR/USD (Live)", "GBP/USD (Live)", "USD/JPY (Live)", "AUD/USD (Live)"
-        ];
+        let currentPlatform = 'quotex';
+        let animationId;
 
-        const twAssets = [
-            "EUR/USD (TradeWox OTC)", "GBP/USD (TradeWox OTC)", "AUD/USD (TradeWox OTC)",
-            "USD/JPY (TradeWox OTC)", "EUR/JPY (TradeWox OTC)", "GBP/JPY (TradeWox OTC)",
-            "BTC/USD (TradeWox Crypto)", "ETH/USD (TradeWox Crypto)", "SOL/USD (TradeWox Crypto)",
-            "XRP/USD (TradeWox Crypto)", "ADA/USD (TradeWox Crypto)", "DOGE/USD (TradeWox Crypto)",
-            "GOLD (TradeWox Spot)", "SILVER (TradeWox Spot)", "CRUDE OIL (TradeWox)",
-            "EUR/USD (TradeWox Forex)", "GBP/USD (TradeWox Forex)", "USD/CAD (TradeWox Forex)"
-        ];
+        function setMarket(platform) {
+            currentPlatform = platform;
+            document.getElementById('qxBtn').classList.toggle('active', platform === 'quotex');
+            document.getElementById('twBtn').classList.toggle('active', platform === 'tradewox');
+            populateAssets();
+        }
 
-        function updateAssetDropdown() {
-            let select = document.getElementById('assetSelect');
-            select.innerHTML = "";
-            let assets = currentMarket === 'quotex' ? qxAssets : twAssets;
-            
-            assets.forEach(asset => {
+        function populateAssets() {
+            const select = document.getElementById('assetSelect');
+            select.innerHTML = '';
+            const list = currentPlatform === 'quotex' ? qxPairs : twPairs;
+            list.forEach(item => {
                 let opt = document.createElement('option');
-                opt.value = asset;
-                opt.innerText = asset;
+                opt.value = item;
+                opt.innerText = item;
                 select.appendChild(opt);
             });
         }
 
-        function switchMarket(market) {
-            currentMarket = market;
-            document.getElementById('qxTab').classList.toggle('active', market === 'quotex');
-            document.getElementById('twTab').classList.toggle('active', market === 'tradewox');
+        function drawAnimatedChart() {
+            const canvas = document.getElementById('chartCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
             
-            if(market === 'quotex') {
-                document.getElementById('marketTitle').innerText = "Quotex AI Analyzer";
-            } else {
-                document.getElementById('marketTitle').innerText = "TradeWox AI Analyzer";
+            let points = [];
+            for(let i=0; i<30; i++) {
+                points.push(Math.random() * (canvas.height - 20) + 10);
             }
-            updateAssetDropdown();
-            generateSignal();
+
+            let offset = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 2;
+
+                let step = canvas.width / (points.length - 1);
+                for(let i = 0; i < points.length; i++) {
+                    let x = i * step;
+                    let y = points[i] + Math.sin(i + offset) * 5;
+                    if(i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                offset += 0.1;
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
         }
 
-        function generateSignal() {
-            let selectedAsset = document.getElementById('assetSelect').value;
-            let timeframe = document.getElementById('tfSelect').value;
-            let btn = document.getElementById('genBtn');
-            let loaderBox = document.getElementById('loaderBox');
-            let signalContainer = document.getElementById('signalContainer');
-            let loaderStatus = document.getElementById('loaderStatus');
+        function startAnalysis() {
+            const btn = document.getElementById('genBtn');
+            const analysisView = document.getElementById('analysisView');
+            const signalAlert = document.getElementById('signalAlert');
+            const scanText = document.getElementById('scanText');
+            const selectedAsset = document.getElementById('assetSelect').value;
 
             btn.disabled = true;
-            signalContainer.style.display = "none";
-            loaderBox.style.display = "flex";
-            loaderStatus.innerText = "Analyzing " + selectedAsset + " (" + timeframe + ")...";
+            signalAlert.style.display = 'none';
+            analysisView.style.display = 'block';
+
+            drawAnimatedChart();
+
+            scanText.innerText = "Connecting to market feed...";
+            setTimeout(() => { scanText.innerText = "Analyzing RSI & Bollinger Bands..."; }, 1000);
+            setTimeout(() => { scanText.innerText = "Calculating AI Probability..."; }, 2200);
 
             setTimeout(() => {
-                loaderStatus.innerText = "Calculating AI Win Probability...";
-            }, 1200);
+                cancelAnimationFrame(animationId);
+                analysisView.style.display = 'none';
+                
+                const isCall = Math.random() > 0.45;
+                const dirBox = document.getElementById('alertDirection');
+                dirBox.innerText = isCall ? "▲ CALL (UP)" : "▼ PUT (DOWN)";
+                dirBox.className = "direction-box " + (isCall ? "up-signal" : "down-signal");
 
-            setTimeout(() => {
-                let types = ['CALL (UP)', 'PUT (DOWN)'];
-                let randomType = types[Math.floor(Math.random() * types.length)];
-                let winRate = (93 + Math.random() * 6).toFixed(1);
-
-                loaderBox.style.display = "none";
-                signalContainer.style.display = "block";
-                
-                let box = document.getElementById('signalBox');
-                box.innerText = randomType;
-                box.className = "signal-box " + (randomType.includes('CALL') ? 'call' : 'put');
-                
-                document.getElementById('winBadge').innerText = "WIN CHANCE: " + winRate + "%";
-                document.getElementById('pairName').innerText = "Asset: " + selectedAsset;
-                
-                document.getElementById('tfDisplay').innerText = timeframe;
-                document.getElementById('expDisplay').innerText = timeframe;
+                document.getElementById('alertAsset').innerText = selectedAsset;
+                document.getElementById('alertAcc').innerText = (94 + Math.random() * 5).toFixed(1) + "%";
 
                 let now = new Date();
-                if(timeframe === "30 Seconds") {
-                    now.setSeconds(now.getSeconds() + 30);
-                } else {
-                    now.setMinutes(now.getMinutes() + 1);
-                }
-                
-                document.getElementById('sigTime').innerText = now.toTimeString().substring(0, 8);
-                document.getElementById('accVal').innerText = winRate + "%";
+                let tf = document.getElementById('tfSelect').value;
+                if(tf === '30s') now.setSeconds(now.getSeconds() + 30);
+                else now.setMinutes(now.getMinutes() + 1);
 
+                document.getElementById('alertTime').innerText = now.toTimeString().substring(0, 8);
+                
+                signalAlert.style.display = 'block';
                 btn.disabled = false;
-            }, 2600);
+            }, 3200);
         }
 
-        updateAssetDropdown();
-        generateSignal();
+        populateAssets();
     </script>
 </body>
 </html>

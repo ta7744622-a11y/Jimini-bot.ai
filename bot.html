@@ -50,13 +50,13 @@
         </div>
 
         <div class="market-tabs">
-            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex All Markets</button>
-            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox All Markets</button>
+            <button class="tab active" id="qxTab" onclick="switchMarket('quotex')">Quotex Markets</button>
+            <button class="tab" id="twTab" onclick="switchMarket('tradewox')">TradeWox Markets</button>
         </div>
 
         <div class="select-grid">
             <div class="select-box">
-                <label>Select Market Asset:</label>
+                <label>Select Asset:</label>
                 <select id="assetSelect" onchange="generateSignal()">
                 </select>
             </div>
@@ -106,9 +106,12 @@
         ];
 
         const twAssets = [
-            "BTC/USD (Crypto OTC)", "ETH/USD (Crypto OTC)", "SOL/USD (Crypto OTC)",
-            "GOLD (Commodity)", "SILVER (Commodity)", "CRUDE OIL",
-            "EUR/USD (Forex)", "GBP/JPY (Forex)", "USD/JPY (Forex)", "AUD/NZD (Forex)"
+            "EUR/USD (TradeWox OTC)", "GBP/USD (TradeWox OTC)", "AUD/USD (TradeWox OTC)",
+            "USD/JPY (TradeWox OTC)", "EUR/JPY (TradeWox OTC)", "GBP/JPY (TradeWox OTC)",
+            "BTC/USD (TradeWox Crypto)", "ETH/USD (TradeWox Crypto)", "SOL/USD (TradeWox Crypto)",
+            "XRP/USD (TradeWox Crypto)", "ADA/USD (TradeWox Crypto)", "DOGE/USD (TradeWox Crypto)",
+            "GOLD (TradeWox Spot)", "SILVER (TradeWox Spot)", "CRUDE OIL (TradeWox)",
+            "EUR/USD (TradeWox Forex)", "GBP/USD (TradeWox Forex)", "USD/CAD (TradeWox Forex)"
         ];
 
         function updateAssetDropdown() {
@@ -149,7 +152,7 @@
             btn.disabled = true;
             signalContainer.style.display = "none";
             loaderBox.style.display = "flex";
-            loaderStatus.innerText = "Scanning " + timeframe + " Candle Patterns...";
+            loaderStatus.innerText = "Analyzing " + selectedAsset + " (" + timeframe + ")...";
 
             setTimeout(() => {
                 loaderStatus.innerText = "Calculating AI Win Probability...";

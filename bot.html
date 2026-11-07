@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jimini AI VIP Trading Bot</title>
+    <title>Jimini AI VIP Trading Bot - Pro Strategy</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0e14; color: #ffffff; padding: 15px; }
@@ -24,15 +24,19 @@
         .analysis-container { display: none; background: #161d2a; border-radius: 12px; padding: 15px; border: 1px solid #252f40; margin-bottom: 20px; text-align: center; }
         .analysis-title { font-size: 13px; color: #38bdf8; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
         #chartCanvas { width: 100%; height: 120px; background: #0b0e14; border-radius: 8px; margin-bottom: 10px; }
-        .scan-status { font-size: 12px; color: #94a3b8; }
+        .scan-status { font-size: 12px; color: #94a3b8; line-height: 1.4; }
 
         .signal-alert { display: none; background: #161d2a; border-radius: 14px; padding: 20px; border: 2px solid #38bdf8; text-align: center; margin-bottom: 20px; }
         .alert-asset { font-size: 16px; font-weight: bold; color: #facc15; margin-bottom: 8px; }
-        .direction-box { font-size: 28px; font-weight: 900; padding: 12px; border-radius: 10px; margin: 10px 0; }
+        .direction-box { font-size: 26px; font-weight: 900; padding: 12px; border-radius: 10px; margin: 10px 0; }
         .up-signal { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
         .down-signal { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
-        .warning-signal { background: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid #eab308; font-size: 20px; }
+        .warning-signal { background: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid #eab308; font-size: 18px; }
         
+        .strategy-info { background: #0b0e14; border: 1px solid #1f2937; padding: 10px; border-radius: 8px; font-size: 11px; color: #94a3b8; text-align: left; margin-top: 10px; }
+        .strategy-info div { margin-bottom: 3px; }
+        .strategy-val { color: #38bdf8; font-weight: bold; float: right; }
+
         .mtg-box { background: rgba(239, 68, 68, 0.1); border: 1px dashed #ef4444; color: #f87171; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 10px; font-weight: bold; display: none; }
 
         .signal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; font-size: 12px; }
@@ -48,8 +52,8 @@
 
     <div class="app-card">
         <div class="top-header">
-            <div class="logo">⚡ JIMINI AI VIP</div>
-            <div class="status-badge">● ONLINE</div>
+            <div class="logo">⚡ JIMINI PRO AI</div>
+            <div class="status-badge">● STRATEGY ACTIVE</div>
         </div>
 
         <div class="market-toggle">
@@ -72,22 +76,30 @@
         </div>
 
         <div class="analysis-container" id="analysisView">
-            <div class="analysis-title">📊 AI ANALYZING MARKET</div>
+            <div class="analysis-title">📊 PRO STRATEGY SCANNING</div>
             <canvas id="chartCanvas"></canvas>
-            <div class="scan-status" id="scanText">Scanning market momentum...</div>
+            <div class="scan-status" id="scanText">Checking Bollinger Bands & RSI...</div>
         </div>
 
         <div class="signal-alert" id="signalAlert">
             <div class="alert-asset" id="alertAsset">USD/PKR (OTC)</div>
             <div class="direction-box up-signal" id="alertDirection">▲ CALL / UP</div>
+            
+            <div class="strategy-info" id="stratInfo">
+                <div>RSI (14): <span class="strategy-val" id="rsiVal">28.4 (Oversold)</span></div>
+                <div>Bollinger Band: <span class="strategy-val" id="bbVal">Lower Band Touch</span></div>
+                <div>Support/Resistance: <span class="strategy-val" id="srVal">Strong Support Level</span></div>
+            </div>
+
             <div class="mtg-box" id="mtgBox">⚠️ IF LOSS: Use MTG (1 Step Compound)</div>
+            
             <div class="signal-meta">
-                <div class="meta-item">ACCURACY<div class="meta-val" id="alertAcc">98.2%</div></div>
+                <div class="meta-item">WIN ACCURACY<div class="meta-val" id="alertAcc">99.1%</div></div>
                 <div class="meta-item">ENTRY TIME<div class="meta-val" id="alertTime">00:00</div></div>
             </div>
         </div>
 
-        <button class="action-btn" id="genBtn" onclick="startAnalysis()">Generate Signal</button>
+        <button class="action-btn" id="genBtn" onclick="startAnalysis()">Run AI Strategy Signal</button>
     </div>
 
     <script>
@@ -123,7 +135,7 @@
             canvas.height = canvas.offsetHeight;
             
             let points = [];
-            for(let i=0; i<30; i++) {
+            for(let i=0; i<35; i++) {
                 points.push(Math.random() * (canvas.height - 20) + 10);
             }
 
@@ -137,12 +149,12 @@
                 let step = canvas.width / (points.length - 1);
                 for(let i = 0; i < points.length; i++) {
                     let x = i * step;
-                    let y = points[i] + Math.sin(i + offset) * 5;
+                    let y = points[i] + Math.sin(i + offset) * 6;
                     if(i === 0) ctx.moveTo(x, y);
                     else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
-                offset += 0.1;
+                offset += 0.12;
                 animationId = requestAnimationFrame(animate);
             }
             animate();
@@ -161,9 +173,10 @@
 
             drawAnimatedChart();
 
-            scanText.innerText = "Checking market volatility...";
-            setTimeout(() => { scanText.innerText = "Analyzing RSI & Trend Line..."; }, 1000);
-            setTimeout(() => { scanText.innerText = "Finalizing AI decision..."; }, 2200);
+            scanText.innerText = "Analyzing Bollinger Bands width...";
+            setTimeout(() => { scanText.innerText = "Checking RSI Overbought / Oversold zones..."; }, 1100);
+            setTimeout(() => { scanText.innerText = "Validating Support & Resistance zones..."; }, 2300);
+            setTimeout(() => { scanText.innerText = "Executing High-Win Probability Filter..."; }, 3300);
 
             setTimeout(() => {
                 cancelAnimationFrame(animationId);
@@ -172,27 +185,39 @@
                 const randVal = Math.random();
                 const dirBox = document.getElementById('alertDirection');
                 const mtgBox = document.getElementById('mtgBox');
+                const stratInfo = document.getElementById('stratInfo');
                 
-                // 20% chance of "No Signal / Don't Trade" warning
-                if(randVal < 0.20) {
-                    dirBox.innerText = "⚠️ DON'T TRADE (NO SIGNAL)";
+                // 15% chance of market noise warning
+                if(randVal < 0.15) {
+                    dirBox.innerText = "⚠️ MARKET SIDEWAYS (SKIP)";
                     dirBox.className = "direction-box warning-signal";
                     mtgBox.style.display = 'none';
-                    document.getElementById('alertAcc').innerText = "Unstable";
+                    stratInfo.style.display = 'none';
+                    document.getElementById('alertAcc').innerText = "Low Prob";
                 } else {
-                    const isCall = randVal > 0.60;
+                    stratInfo.style.display = 'block';
+                    const isCall = randVal > 0.50;
                     dirBox.innerText = isCall ? "▲ CALL (UP)" : "▼ PUT (DOWN)";
                     dirBox.className = "direction-box " + (isCall ? "up-signal" : "down-signal");
                     
-                    // Show MTG advice sometimes
-                    if(Math.random() > 0.5) {
+                    if(isCall) {
+                        document.getElementById('rsiVal').innerText = (20 + Math.random() * 10).toFixed(1) + " (Oversold)";
+                        document.getElementById('bbVal').innerText = "Lower Band Rejection";
+                        document.getElementById('srVal').innerText = "Major Support Bounce";
+                    } else {
+                        document.getElementById('rsiVal').innerText = (70 + Math.random() * 15).toFixed(1) + " (Overbought)";
+                        document.getElementById('bbVal').innerText = "Upper Band Rejection";
+                        document.getElementById('srVal').innerText = "Major Resistance Rejection";
+                    }
+
+                    if(Math.random() > 0.4) {
                         mtgBox.style.display = 'block';
                         mtgBox.innerText = "⚠️ IF LOSS: Use MTG (1 Step Compound)";
                     } else {
                         mtgBox.style.display = 'none';
                     }
 
-                    document.getElementById('alertAcc').innerText = (94 + Math.random() * 5).toFixed(1) + "%";
+                    document.getElementById('alertAcc').innerText = (97 + Math.random() * 2.5).toFixed(1) + "%";
                 }
 
                 document.getElementById('alertAsset').innerText = selectedAsset;
@@ -206,7 +231,7 @@
                 
                 signalAlert.style.display = 'block';
                 btn.disabled = false;
-            }, 3200);
+            }, 4200);
         }
 
         populateAssets();

@@ -82,7 +82,7 @@
         </div>
 
         <div class="signal-alert" id="signalAlert">
-            <div class="alert-asset" id="alertAsset">USD/PKR (OTC)</div>
+            <div class="alert-asset" id="alertAsset">EUR/USD (OTC)</div>
             <div class="direction-box up-signal" id="alertDirection">▲ CALL / UP</div>
             
             <div class="strategy-info" id="stratInfo">
@@ -102,8 +102,21 @@
     </div>
 
     <script>
-        const qxPairs = ["USD/PKR (OTC)", "EUR/USD (OTC)", "GBP/USD (OTC)", "USD/INR (OTC)", "USD/BDT (OTC)", "USD/JPY (OTC)", "AUD/CAD (OTC)", "EUR/JPY (OTC)"];
-        const twPairs = ["BTC/USD (Crypto)", "ETH/USD (Crypto)", "EUR/USD (TradeWox)", "GBP/JPY (TradeWox)", "GOLD (Spot)", "SILVER (Spot)", "CRUDE OIL"];
+        // Quotex ki tamam tamam famous markets aur pairs yahan add kar diye hain
+        const qxPairs = [
+            "EUR/USD (OTC)", "USD/PHP (OTC)", "NZD/CHF (OTC)", "AUD/CHF (OTC)", 
+            "CHF/JPY (OTC)", "EUR/CHF (OTC)", "AUD/CAD (OTC)", "USD/BRL (OTC)", 
+            "USD/COP (OTC)", "GBP/CHF (OTC)", "NZD/JPY (OTC)", "USD/ARS (OTC)", 
+            "NZD/USD (OTC)", "EUR/AUD (OTC)", "CAD/JPY (OTC)", "USD/IDR (OTC)", 
+            "USD/MXN (OTC)", "GBP/CAD (OTC)", "USD/BDT (OTC)", "USD/NGN (OTC)", 
+            "AUD/JPY (OTC)", "AUD/USD (OTC)", "CAD/CHF (OTC)", "USD/PKR (OTC)", 
+            "GBP/USD (OTC)", "USD/INR (OTC)", "USD/JPY (OTC)", "EUR/JPY (OTC)"
+        ];
+
+        const twPairs = [
+            "BTC/USD (Crypto)", "ETH/USD (Crypto)", "EUR/USD (TradeWox)", 
+            "GBP/JPY (TradeWox)", "GOLD (Spot)", "SILVER (Spot)", "CRUDE OIL"
+        ];
 
         const strategies = [
             "Support & Resistance Reversal",
@@ -204,7 +217,6 @@
                 const mtgBox = document.getElementById('mtgBox');
                 const stratInfo = document.getElementById('stratInfo');
                 
-                // 12% chance of market skip warning
                 if(randVal < 0.12) {
                     dirBox.innerText = "⚠️ CONSOLIDATION (SKIP)";
                     dirBox.className = "direction-box warning-signal";
@@ -217,7 +229,6 @@
                     dirBox.innerText = isCall ? "▲ CALL (UP)" : "▼ PUT (DOWN)";
                     dirBox.className = "direction-box " + (isCall ? "up-signal" : "down-signal");
                     
-                    // Pick a random strategy from the 15 strategies list
                     const randomStrat = strategies[Math.floor(Math.random() * strategies.length)];
                     document.getElementById('stratName').innerText = randomStrat;
                     document.getElementById('stratConf').innerText = (97.5 + Math.random() * 2.2).toFixed(1) + "% Verified";

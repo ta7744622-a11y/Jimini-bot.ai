@@ -12,15 +12,13 @@
         .main-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #38bdf8, #34d399); }
 
         .header { text-align: center; margin-bottom: 20px; }
-        .brand { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .brand { font-size: 22px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .subtitle { font-size: 13px; color: #94a3b8; margin-top: 5px; }
 
-        /* Progress Bar */
         .progress-container { background: #1e293b; border-radius: 10px; padding: 3px; margin-bottom: 25px; border: 1px solid #334155; }
         .progress-bar { height: 8px; width: 0%; background: linear-gradient(90deg, #38bdf8, #10b981); border-radius: 8px; transition: width 0.4s ease; }
         .progress-text { font-size: 11px; color: #94a3b8; text-align: right; margin-top: 4px; font-weight: bold; }
 
-        /* Task Cards */
         .task-box { background: #182234; border: 1px solid #24334a; border-radius: 14px; padding: 16px; margin-bottom: 14px; transition: 0.3s; }
         .task-box.completed { border-color: #10b981; background: rgba(16, 185, 129, 0.05); }
         
@@ -29,22 +27,18 @@
         .badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; background: #334155; color: #94a3b8; text-transform: uppercase; }
         .task-box.completed .badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
-        .task-btn { display: inline-block; width: 100%; text-align: center; padding: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; margin-bottom: 10px; transition: 0.2s; }
+        .task-btn { display: inline-block; width: 100%; text-align: center; padding: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; margin-bottom: 10px; }
         .task-btn:hover { background: #38bdf8; color: #0f172a; }
 
         .file-label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 5px; }
         input[type="file"] { width: 100%; padding: 8px; background: #0f172a; border: 1px dashed #334155; color: #94a3b8; border-radius: 8px; font-size: 12px; cursor: pointer; }
-        input[type="file"]::-webkit-file-upload-button { background: #1e293b; border: none; color: #38bdf8; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
-
         input.text-input { width: 100%; padding: 11px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 13px; outline: none; margin-top: 5px; }
-        input.text-input:focus { border-color: #38bdf8; }
 
-        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #10b981, #059669); color: #fff; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; margin-top: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        .submit-btn:disabled { background: #1e293b; color: #475569; cursor: not-allowed; box-shadow: none; }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #10b981, #059669); color: #fff; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .submit-btn:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
 
-        /* Key Box */
         .key-box { display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 20px; border-radius: 14px; text-align: center; margin-top: 15px; }
-        .key-code { font-size: 22px; font-weight: 900; color: #34d399; background: #0f172a; padding: 12px; border-radius: 8px; margin: 12px 0; letter-spacing: 2px; border: 1px dashed #10b981; }
+        .key-code { font-size: 20px; font-weight: 900; color: #34d399; background: #0f172a; padding: 12px; border-radius: 8px; margin: 12px 0; border: 1px dashed #10b981; word-break: break-all; }
         .portal-btn { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; font-weight: 800; border-radius: 8px; font-size: 14px; cursor: pointer; }
     </style>
 </head>
@@ -53,7 +47,7 @@
     <div class="main-card">
         <div class="header">
             <div class="brand">⚡ JIMINI AI VIP</div>
-            <p class="subtitle">Complete verification steps to unlock trading bot access.</p>
+            <p class="subtitle">Complete tasks to generate your Access Key.</p>
         </div>
 
         <div class="progress-container">
@@ -61,48 +55,35 @@
             <div class="progress-text" id="progressText">0% Completed</div>
         </div>
 
-        <!-- Task 1 -->
         <div class="task-box" id="box1">
-            <div class="task-header">
-                <span class="task-title">1. YouTube Subscription</span>
-                <span class="badge" id="badge1">Pending</span>
-            </div>
+            <div class="task-header"><span class="task-title">1. YouTube Subscription</span><span class="badge" id="badge1">Pending</span></div>
             <a href="https://youtube.com/@YOUR_CHANNEL_LINK" target="_blank" class="task-btn">Subscribe Channel</a>
-            <span class="file-label">Upload Subscription Screenshot:</span>
+            <span class="file-label">Upload Screenshot:</span>
             <input type="file" id="file1" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <!-- Task 2 -->
         <div class="task-box" id="box2">
-            <div class="task-header">
-                <span class="task-title">2. TikTok Follow</span>
-                <span class="badge" id="badge2">Pending</span>
-            </div>
-            <a href="https://tiktok.com/@YOUR_TIKTOK_HANDLE" target="_blank" class="task-btn">Follow TikTok Account</a>
-            <span class="file-label">Upload Follow Screenshot:</span>
+            <div class="task-header"><span class="task-title">2. TikTok Follow</span><span class="badge" id="badge2">Pending</span></div>
+            <a href="https://tiktok.com/@YOUR_TIKTOK_HANDLE" target="_blank" class="task-btn">Follow TikTok</a>
+            <span class="file-label">Upload Screenshot:</span>
             <input type="file" id="file2" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <!-- Task 3 -->
         <div class="task-box" id="box3">
-            <div class="task-header">
-                <span class="task-title">3. Registration & Trader ID</span>
-                <span class="badge" id="badge3">Pending</span>
-            </div>
+            <div class="task-header"><span class="task-title">3. Registration & Trader ID</span><span class="badge" id="badge3">Pending</span></div>
             <a href="https://your-quotex-affiliate-link.com" target="_blank" class="task-btn">Create Broker Account</a>
-            <input type="text" id="traderId" class="text-input" placeholder="Enter Your Registered Trader ID" oninput="updateProgress()">
-            <span class="file-label" style="margin-top: 8px;">Upload Account/Deposit Screenshot:</span>
+            <input type="text" id="traderId" class="text-input" placeholder="Enter Trader ID" oninput="updateProgress()">
+            <span class="file-label" style="margin-top: 8px;">Upload Deposit Screenshot:</span>
             <input type="file" id="file3" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <button class="submit-btn" id="submitBtn" disabled onclick="unlockAccess()">Unlock VIP Access Key</button>
+        <button class="submit-btn" id="submitBtn" disabled onclick="submitDataToTelegram()">Generate My Access Key</button>
 
-        <!-- Result Box -->
         <div class="key-box" id="keyBox">
-            <h3 style="color: #34d399; font-size: 16px;">🎉 Verification Verified!</h3>
-            <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Your Access Key is activated:</p>
-            <div class="key-code">JIMINI-PASS-8877</div>
-            <button class="portal-btn" onclick="goToPortal()">Continue to Login Portal →</button>
+            <h3 style="color: #34d399; font-size: 16px;">🎉 Verified & Key Generated!</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Copy this key to login in portal:</p>
+            <div class="key-code" id="userUniqueKey">--</div>
+            <button class="portal-btn" onclick="goToPortal()">Go to Portal Login →</button>
         </div>
     </div>
 
@@ -121,12 +102,7 @@
             let percent = Math.round((count / 3) * 100);
             document.getElementById('progressBar').style.width = percent + "%";
             document.getElementById('progressText').innerText = percent + "% Completed";
-
-            if (count === 3) {
-                document.getElementById('submitBtn').disabled = false;
-            } else {
-                document.getElementById('submitBtn').disabled = true;
-            }
+            document.getElementById('submitBtn').disabled = (count !== 3);
         }
 
         function setCompleted(boxId, badgeId) {
@@ -134,10 +110,29 @@
             document.getElementById(badgeId).innerText = "Done ✓";
         }
 
-        function unlockAccess() {
+        function submitDataToTelegram() {
+            const traderId = document.getElementById('traderId').value.trim();
+            const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const uniqueKey = "JIMINI-" + randomString + "-VIP";
+            
+            // Save key in browser storage
+            localStorage.setItem("user_vip_key", uniqueKey);
+            localStorage.setItem("key_expiry", new Date().getTime() + (24 * 60 * 60 * 1000));
+
+            // --- TELEGRAM CONFIGURATION ---
+            const BOT_TOKEN = "APNA_BOT_TOKEN_YAHAN_DALO"; // Apna BotFather wala token yahan daalein
+            const CHAT_ID = "APNI_CHAT_ID_YAHAN_DALO";     // Apni Telegram chat ID yahan daalein
+            
+            const message = `🚨 New VIP Registration!\n👤 Trader ID: ${traderId}\n🔑 Generated Key: ${uniqueKey}`;
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+
+            // Send data to Telegram
+            fetch(url).catch(err => console.log(err));
+
+            // UI update
+            document.getElementById('userUniqueKey').innerText = uniqueKey;
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('keyBox').style.display = 'block';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
         function goToPortal() {

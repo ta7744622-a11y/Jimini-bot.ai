@@ -3,94 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jimini AI Bot Pro - Access Portal</title>
+    <title>Jimini AI VIP Verification</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0f19; color: #fff; text-align: center; padding: 20px; }
-        .container { max-width: 480px; margin: 20px auto; background: #161e2e; padding: 25px; border-radius: 16px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #38bdf8; font-size: 26px; margin-bottom: 8px; }
-        .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #07090e; color: #fff; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        .live-status { display: inline-flex; align-items: center; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; padding: 8px 16px; border-radius: 20px; margin-bottom: 20px; }
-        .dot { height: 10px; width: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; animation: blink 1.5s infinite; }
-        .counter-text { color: #4ade80; font-weight: bold; font-size: 14px; }
+        .main-card { width: 100%; max-width: 440px; background: #0f172a; border: 1px solid #1e293b; border-radius: 20px; padding: 25px; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); position: relative; overflow: hidden; }
+        .main-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #38bdf8, #34d399); }
 
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .header { text-align: center; margin-bottom: 20px; }
+        .brand { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .subtitle { font-size: 13px; color: #94a3b8; margin-top: 5px; }
 
-        .step-box { background: #0f172a; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; text-align: left; }
-        .step-box h3 { color: #facc15; font-size: 15px; margin-bottom: 4px; }
-        .step-box p { color: #94a3b8; font-size: 12px; margin-bottom: 10px; }
+        /* Progress Bar */
+        .progress-container { background: #1e293b; border-radius: 10px; padding: 3px; margin-bottom: 25px; border: 1px solid #334155; }
+        .progress-bar { height: 8px; width: 0%; background: linear-gradient(90deg, #38bdf8, #10b981); border-radius: 8px; transition: width 0.4s ease; }
+        .progress-text { font-size: 11px; color: #94a3b8; text-align: right; margin-top: 4px; font-weight: bold; }
+
+        /* Task Cards */
+        .task-box { background: #182234; border: 1px solid #24334a; border-radius: 14px; padding: 16px; margin-bottom: 14px; transition: 0.3s; }
+        .task-box.completed { border-color: #10b981; background: rgba(16, 185, 129, 0.05); }
         
-        .btn { display: block; width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; text-decoration: none; font-weight: bold; border-radius: 8px; text-align: center; transition: 0.3s; }
-        .btn:hover { background: #0ea5e9; }
-        
-        .btn-quotex { background: #e11d48; color: #fff; }
-        .btn-quotex:hover { background: #be123c; }
-        
-        .btn-tradewox { background: #6366f1; color: #fff; }
-        .btn-tradewox:hover { background: #4f46e5; }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .task-title { font-size: 14px; font-weight: 700; color: #f8fafc; }
+        .badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; background: #334155; color: #94a3b8; text-transform: uppercase; }
+        .task-box.completed .badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
-        .btn-tiktok { background: #fe2c55; color: #fff; }
-        .btn-tiktok:hover { background: #e02649; }
+        .task-btn { display: inline-block; width: 100%; text-align: center; padding: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; font-size: 13px; font-weight: 700; border-radius: 8px; text-decoration: none; margin-bottom: 10px; transition: 0.2s; }
+        .task-btn:hover { background: #38bdf8; color: #0f172a; }
 
-        .next-btn { background: #22c55e; color: #fff; font-size: 16px; margin-top: 15px; border: none; cursor: pointer; width: 100%; padding: 14px; border-radius: 8px; font-weight: bold; }
-        .next-btn:hover { background: #16a34a; }
+        .file-label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 5px; }
+        input[type="file"] { width: 100%; padding: 8px; background: #0f172a; border: 1px dashed #334155; color: #94a3b8; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        input[type="file"]::-webkit-file-upload-button { background: #1e293b; border: none; color: #38bdf8; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+        input.text-input { width: 100%; padding: 11px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 13px; outline: none; margin-top: 5px; }
+        input.text-input:focus { border-color: #38bdf8; }
+
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #10b981, #059669); color: #fff; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; margin-top: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .submit-btn:disabled { background: #1e293b; color: #475569; cursor: not-allowed; box-shadow: none; }
+
+        /* Key Box */
+        .key-box { display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 20px; border-radius: 14px; text-align: center; margin-top: 15px; }
+        .key-code { font-size: 22px; font-weight: 900; color: #34d399; background: #0f172a; padding: 12px; border-radius: 8px; margin: 12px 0; letter-spacing: 2px; border: 1px dashed #10b981; }
+        .portal-btn { width: 100%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; font-weight: 800; border-radius: 8px; font-size: 14px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Jimini AI Bot Pro</h1>
-        <p class="subtitle">Complete steps & send Trader ID to unlock VIP Bot</p>
-
-        <!-- Live 5000+ Counter -->
-        <div class="live-status">
-            <span class="dot"></span>
-            <span class="counter-text"><span id="userCount">5,024</span> Active Users Connected</span>
+    <div class="main-card">
+        <div class="header">
+            <div class="brand">⚡ JIMINI AI VIP</div>
+            <p class="subtitle">Complete verification steps to unlock trading bot access.</p>
         </div>
 
-        <!-- Step 1: Quotex -->
-        <div class="step-box">
-            <h3>Step 1: Quotex Account ($10 Deposit)</h3>
-            <p>Create account via link & deposit min $10, then note your Trader ID.</p>
-            <a href="https://broker-qx.pro/sign-up/?lid=1189719" target="_blank" class="btn btn-quotex">Open Quotex Account</a>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-text" id="progressText">0% Completed</div>
         </div>
 
-        <!-- Step 2: TradeWox -->
-        <div class="step-box">
-            <h3>Step 2: TradeWox Account Setup</h3>
-            <p>Alternative: Register via TradeWox link & deposit $10.</p>
-            <a href="https://tradowix.com/register?lid=39969294" target="_blank" class="btn btn-tradewox">Open TradeWox Account</a>
+        <!-- Task 1 -->
+        <div class="task-box" id="box1">
+            <div class="task-header">
+                <span class="task-title">1. YouTube Subscription</span>
+                <span class="badge" id="badge1">Pending</span>
+            </div>
+            <a href="https://youtube.com/@YOUR_CHANNEL_LINK" target="_blank" class="task-btn">Subscribe Channel</a>
+            <span class="file-label">Upload Subscription Screenshot:</span>
+            <input type="file" id="file1" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <!-- Step 3: YouTube -->
-        <div class="step-box">
-            <h3>Step 3: Subscribe YouTube</h3>
-            <p>Subscribe to our official channel for updates.</p>
-            <a href="https://youtube.com/@rajpootfuny?si=VOb2ZeAhKlRIw_sk" target="_blank" class="btn">Subscribe YouTube</a>
+        <!-- Task 2 -->
+        <div class="task-box" id="box2">
+            <div class="task-header">
+                <span class="task-title">2. TikTok Follow</span>
+                <span class="badge" id="badge2">Pending</span>
+            </div>
+            <a href="https://tiktok.com/@YOUR_TIKTOK_HANDLE" target="_blank" class="task-btn">Follow TikTok Account</a>
+            <span class="file-label">Upload Follow Screenshot:</span>
+            <input type="file" id="file2" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <!-- Step 4: TikTok -->
-        <div class="step-box">
-            <h3>Step 4: Follow TikTok</h3>
-            <p>Follow our TikTok account for quick signals.</p>
-            <a href="https://www.tiktok.com/@kashi.trader87?_r=1&_t=ZN-9BBqhV23y10" target="_blank" class="btn btn-tiktok">Follow on TikTok</a>
+        <!-- Task 3 -->
+        <div class="task-box" id="box3">
+            <div class="task-header">
+                <span class="task-title">3. Registration & Trader ID</span>
+                <span class="badge" id="badge3">Pending</span>
+            </div>
+            <a href="https://your-quotex-affiliate-link.com" target="_blank" class="task-btn">Create Broker Account</a>
+            <input type="text" id="traderId" class="text-input" placeholder="Enter Your Registered Trader ID" oninput="updateProgress()">
+            <span class="file-label" style="margin-top: 8px;">Upload Account/Deposit Screenshot:</span>
+            <input type="file" id="file3" accept="image/*" onchange="updateProgress()">
         </div>
 
-        <button class="next-btn" onclick="goToPortal()">I Completed Tasks (Enter Trader ID)</button>
+        <button class="submit-btn" id="submitBtn" disabled onclick="unlockAccess()">Unlock VIP Access Key</button>
+
+        <!-- Result Box -->
+        <div class="key-box" id="keyBox">
+            <h3 style="color: #34d399; font-size: 16px;">🎉 Verification Verified!</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Your Access Key is activated:</p>
+            <div class="key-code">JIMINI-PASS-8877</div>
+            <button class="portal-btn" onclick="goToPortal()">Continue to Login Portal →</button>
+        </div>
     </div>
 
     <script>
-        let count = 5024;
-        setInterval(() => {
-            let change = Math.floor(Math.random() * 5) - 2;
-            count += change;
-            if(count < 5000) count = 5000;
-            document.getElementById('userCount').innerText = count.toLocaleString();
-        }, 3000);
+        function updateProgress() {
+            let f1 = document.getElementById('file1').files.length > 0;
+            let f2 = document.getElementById('file2').files.length > 0;
+            let f3 = document.getElementById('file3').files.length > 0;
+            let tId = document.getElementById('traderId').value.trim().length >= 4;
+
+            let count = 0;
+            if (f1) { count++; setCompleted('box1', 'badge1'); }
+            if (f2) { count++; setCompleted('box2', 'badge2'); }
+            if (f3 && tId) { count++; setCompleted('box3', 'badge3'); }
+
+            let percent = Math.round((count / 3) * 100);
+            document.getElementById('progressBar').style.width = percent + "%";
+            document.getElementById('progressText').innerText = percent + "% Completed";
+
+            if (count === 3) {
+                document.getElementById('submitBtn').disabled = false;
+            } else {
+                document.getElementById('submitBtn').disabled = true;
+            }
+        }
+
+        function setCompleted(boxId, badgeId) {
+            document.getElementById(boxId).classList.add('completed');
+            document.getElementById(badgeId).innerText = "Done ✓";
+        }
+
+        function unlockAccess() {
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('keyBox').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
 
         function goToPortal() {
-            window.location.href = "portal.html";
+            window.location.href = 'portal.html';
         }
     </script>
 </body>

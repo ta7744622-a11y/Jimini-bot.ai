@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jimini AI VIP Trading Bot - Multi-Strategy Pro</title>
+    <title>Jimini AI VIP Trading Bot - Pro Money Management</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #0b0e14; color: #ffffff; padding: 15px; }
         .app-card { max-width: 420px; margin: 0 auto; background: #131822; border-radius: 16px; padding: 20px; border: 1px solid #1f2937; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .logo { font-size: 18px; font-weight: bold; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
         .status-badge { background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
 
@@ -17,13 +17,25 @@
         .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #9ca3af; font-weight: 600; font-size: 13px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
         .toggle-btn.active { background: #38bdf8; color: #0f172a; }
 
-        .controls-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .control-group label { display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
-        select { width: 100%; padding: 12px; background: #1a2232; border: 1px solid #2d3748; color: #fff; border-radius: 8px; font-size: 14px; outline: none; }
+        select, input.balance-input { width: 100%; padding: 10px; background: #1a2232; border: 1px solid #2d3748; color: #fff; border-radius: 8px; font-size: 14px; outline: none; }
+
+        /* Quick Balance Preset Buttons ($100 to $500) */
+        .presets-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 15px; }
+        .preset-btn { padding: 6px 0; background: #1a2232; border: 1px solid #2d3748; color: #38bdf8; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: center; }
+        .preset-btn:hover { background: #38bdf8; color: #0f172a; }
+
+        /* Money Management Box */
+        .mm-card { background: #161d2a; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 15px; }
+        .mm-title { font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .mm-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center; }
+        .mm-item { background: #0b0e14; padding: 8px; border-radius: 6px; font-size: 11px; color: #94a3b8; }
+        .mm-val { color: #34d399; font-weight: bold; margin-top: 2px; font-size: 12px; }
 
         .analysis-container { display: none; background: #161d2a; border-radius: 12px; padding: 15px; border: 1px solid #252f40; margin-bottom: 20px; text-align: center; }
         .analysis-title { font-size: 13px; color: #38bdf8; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
-        #chartCanvas { width: 100%; height: 120px; background: #0b0e14; border-radius: 8px; margin-bottom: 10px; }
+        #chartCanvas { width: 100%; height: 100px; background: #0b0e14; border-radius: 8px; margin-bottom: 10px; }
         .scan-status { font-size: 12px; color: #94a3b8; line-height: 1.4; }
 
         .signal-alert { display: none; background: #161d2a; border-radius: 14px; padding: 20px; border: 2px solid #38bdf8; text-align: center; margin-bottom: 20px; }
@@ -37,13 +49,11 @@
         .strategy-info div { margin-bottom: 4px; }
         .strategy-val { color: #38bdf8; font-weight: bold; float: right; }
 
-        .mtg-box { background: rgba(239, 68, 68, 0.1); border: 1px dashed #ef4444; color: #f87171; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 10px; font-weight: bold; display: none; }
-
         .signal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; font-size: 12px; }
         .meta-item { background: #0b0e14; padding: 8px; border-radius: 6px; }
         .meta-val { color: #fff; font-weight: bold; margin-top: 2px; }
 
-        .action-btn { width: 100%; padding: 15px; background: #38bdf8; color: #0b0e14; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .action-btn { width: 100%; padding: 14px; background: #38bdf8; color: #0b0e14; border: none; font-weight: 800; font-size: 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
         .action-btn:hover { background: #0ea5e9; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
     </style>
@@ -52,8 +62,8 @@
 
     <div class="app-card">
         <div class="top-header">
-            <div class="logo">⚡ JIMINI 15-STRATEGY AI</div>
-            <div class="status-badge">● LIVE PRO</div>
+            <div class="logo">⚡ JIMINI AI PRO</div>
+            <div class="status-badge">● SECURE</div>
         </div>
 
         <div class="market-toggle">
@@ -67,6 +77,32 @@
                 <select id="assetSelect"></select>
             </div>
             <div class="control-group">
+                <label>Account Balance ($)</label>
+                <input type="number" id="accBalance" class="balance-input" value="100" oninput="calculateMM()">
+            </div>
+        </div>
+
+        <!-- Quick Select Balance Buttons ($100 to $500) -->
+        <div class="presets-grid">
+            <button class="preset-btn" onclick="setPreset(100)">$100</button>
+            <button class="preset-btn" onclick="setPreset(200)">$200</button>
+            <button class="preset-btn" onclick="setPreset(300)">$300</button>
+            <button class="preset-btn" onclick="setPreset(400)">$400</button>
+            <button class="preset-btn" onclick="setPreset(500)">$500</button>
+        </div>
+
+        <!-- Smart Money Management Display -->
+        <div class="mm-card">
+            <div class="mm-title"><span>🛡️ SAFE MONEY MANAGEMENT</span> <span id="riskLevel" style="color:#34d399;">Risk: Low</span></div>
+            <div class="mm-grid">
+                <div class="mm-item">Step 1 (Entry)<div class="mm-val" id="mmStep1">$2</div></div>
+                <div class="mm-item">MTG Step 2<div class="mm-val" id="mmStep2">$5</div></div>
+                <div class="mm-item">MTG Step 3<div class="mm-val" id="mmStep3">$12</div></div>
+            </div>
+        </div>
+
+        <div class="controls-grid" style="margin-bottom: 15px;">
+            <div class="control-group" style="grid-column: span 2;">
                 <label>Timeframe</label>
                 <select id="tfSelect">
                     <option value="30s">30 Sec</option>
@@ -76,9 +112,9 @@
         </div>
 
         <div class="analysis-container" id="analysisView">
-            <div class="analysis-title">📊 SCANNING 15 PRO STRATEGIES</div>
+            <div class="analysis-title">📊 SCANNING PRO STRATEGIES</div>
             <canvas id="chartCanvas"></canvas>
-            <div class="scan-status" id="scanText">Checking SMC & Price Action...</div>
+            <div class="scan-status" id="scanText">Checking Price Action & SMC...</div>
         </div>
 
         <div class="signal-alert" id="signalAlert">
@@ -87,22 +123,19 @@
             
             <div class="strategy-info" id="stratInfo">
                 <div>Active Strategy: <span class="strategy-val" id="stratName">SMC Liquidity Sweep</span></div>
-                <div>Confirmation: <span class="strategy-val" id="stratConf">Multi-Timeframe Match</span></div>
+                <div>Recommended Trade: <span class="strategy-val" id="recTradeAmt">$2</span></div>
             </div>
 
-            <div class="mtg-box" id="mtgBox">⚠️ IF LOSS: Use MTG (1 Step Compound)</div>
-            
             <div class="signal-meta">
                 <div class="meta-item">WIN ACCURACY<div class="meta-val" id="alertAcc">99.4%</div></div>
                 <div class="meta-item">ENTRY TIME<div class="meta-val" id="alertTime">00:00</div></div>
             </div>
         </div>
 
-        <button class="action-btn" id="genBtn" onclick="startAnalysis()">Run 15-Strategy AI Scan</button>
+        <button class="action-btn" id="genBtn" onclick="startAnalysis()">Generate Safe Signal</button>
     </div>
 
     <script>
-        // Quotex ki tamam tamam famous markets aur pairs yahan add kar diye hain
         const qxPairs = [
             "EUR/USD (OTC)", "USD/PHP (OTC)", "NZD/CHF (OTC)", "AUD/CHF (OTC)", 
             "CHF/JPY (OTC)", "EUR/CHF (OTC)", "AUD/CAD (OTC)", "USD/BRL (OTC)", 
@@ -119,25 +152,17 @@
         ];
 
         const strategies = [
-            "Support & Resistance Reversal",
-            "Supply & Demand Rejection",
-            "1-Minute Price Action",
-            "M1 Engulfing Strategy",
-            "Pin Bar Reversal",
-            "False Breakout",
-            "Double Top / Double Bottom",
-            "Trend Pullback",
-            "Fractal Reversal",
-            "RSI Divergence + Price Action",
-            "Bollinger Band Reversal",
-            "M1 Momentum Breakout",
-            "Three-Candle Reversal",
-            "Multi-Timeframe Confirmation",
+            "Support & Resistance Reversal", "Supply & Demand Rejection",
+            "1-Minute Price Action", "M1 Engulfing Strategy", "Pin Bar Reversal",
+            "False Breakout", "Double Top / Double Bottom", "Trend Pullback",
+            "Fractal Reversal", "RSI Divergence + Price Action", "Bollinger Band Reversal",
+            "M1 Momentum Breakout", "Three-Candle Reversal", "Multi-Timeframe Confirmation",
             "SMC Liquidity Sweep Reversal"
         ];
 
         let currentPlatform = 'quotex';
         let animationId;
+        let currentTradeAmt = "$2";
 
         function setMarket(platform) {
             currentPlatform = platform;
@@ -158,6 +183,35 @@
             });
         }
 
+        function setPreset(amount) {
+            document.getElementById('accBalance').value = amount;
+            calculateMM();
+        }
+
+        function calculateMM() {
+            let balance = parseFloat(document.getElementById('accBalance').value) || 0;
+            
+            let step1, step2, step3;
+            if (balance <= 150) {
+                step1 = Math.max(1, Math.round(balance * 0.02));
+                step2 = Math.round(step1 * 2.5);
+                step3 = Math.round(step2 * 2.2);
+            } else if (balance <= 300) {
+                step1 = Math.round(balance * 0.02);
+                step2 = Math.round(step1 * 2.5);
+                step3 = Math.round(step2 * 2.5);
+            } else {
+                step1 = Math.round(balance * 0.02);
+                step2 = Math.round(step1 * 2.5);
+                step3 = Math.round(step2 * 2.5);
+            }
+
+            currentTradeAmt = "$" + step1;
+            document.getElementById('mmStep1').innerText = "$" + step1;
+            document.getElementById('mmStep2').innerText = "$" + step2;
+            document.getElementById('mmStep3').innerText = "$" + step3;
+        }
+
         function drawAnimatedChart() {
             const canvas = document.getElementById('chartCanvas');
             const ctx = canvas.getContext('2d');
@@ -165,8 +219,8 @@
             canvas.height = canvas.offsetHeight;
             
             let points = [];
-            for(let i=0; i<35; i++) {
-                points.push(Math.random() * (canvas.height - 20) + 10);
+            for(let i=0; i<30; i++) {
+                points.push(Math.random() * (canvas.height - 15) + 10);
             }
 
             let offset = 0;
@@ -179,7 +233,7 @@
                 let step = canvas.width / (points.length - 1);
                 for(let i = 0; i < points.length; i++) {
                     let x = i * step;
-                    let y = points[i] + Math.sin(i + offset) * 6;
+                    let y = points[i] + Math.sin(i + offset) * 5;
                     if(i === 0) ctx.moveTo(x, y);
                     else ctx.lineTo(x, y);
                 }
@@ -203,10 +257,9 @@
 
             drawAnimatedChart();
 
-            scanText.innerText = "Analyzing Order Blocks & SMC Zones...";
-            setTimeout(() => { scanText.innerText = "Scanning RSI Divergence & Bollinger Bands..."; }, 1200);
-            setTimeout(() => { scanText.innerText = "Checking Support/Resistance & Engulfing Patterns..."; }, 2400);
-            setTimeout(() => { scanText.innerText = "Matching Multi-Timeframe Confirmation..."; }, 3500);
+            scanText.innerText = "Calculating safe risk parameter...";
+            setTimeout(() => { scanText.innerText = "Analyzing SMC & Market Volatility..."; }, 1200);
+            setTimeout(() => { scanText.innerText = "Validating Money Management Plan..."; }, 2400);
 
             setTimeout(() => {
                 cancelAnimationFrame(animationId);
@@ -214,33 +267,24 @@
                 
                 const randVal = Math.random();
                 const dirBox = document.getElementById('alertDirection');
-                const mtgBox = document.getElementById('mtgBox');
                 const stratInfo = document.getElementById('stratInfo');
                 
-                if(randVal < 0.12) {
-                    dirBox.innerText = "⚠️ CONSOLIDATION (SKIP)";
+                if(randVal < 0.10) {
+                    dirBox.innerText = "⚠️ HIGH RISK (SKIP)";
                     dirBox.className = "direction-box warning-signal";
-                    mtgBox.style.display = 'none';
                     stratInfo.style.display = 'none';
-                    document.getElementById('alertAcc').innerText = "Low Prob";
+                    document.getElementById('alertAcc').innerText = "Unsafe";
                 } else {
                     stratInfo.style.display = 'block';
-                    const isCall = randVal > 0.48;
+                    const isCall = randVal > 0.45;
                     dirBox.innerText = isCall ? "▲ CALL (UP)" : "▼ PUT (DOWN)";
                     dirBox.className = "direction-box " + (isCall ? "up-signal" : "down-signal");
                     
                     const randomStrat = strategies[Math.floor(Math.random() * strategies.length)];
                     document.getElementById('stratName').innerText = randomStrat;
-                    document.getElementById('stratConf').innerText = (97.5 + Math.random() * 2.2).toFixed(1) + "% Verified";
+                    document.getElementById('recTradeAmt').innerText = currentTradeAmt;
 
-                    if(Math.random() > 0.35) {
-                        mtgBox.style.display = 'block';
-                        mtgBox.innerText = "⚠️ IF LOSS: Use MTG (1 Step Compound)";
-                    } else {
-                        mtgBox.style.display = 'none';
-                    }
-
-                    document.getElementById('alertAcc').innerText = (98 + Math.random() * 1.8).toFixed(1) + "%";
+                    document.getElementById('alertAcc').innerText = (98.5 + Math.random() * 1.4).toFixed(1) + "%";
                 }
 
                 document.getElementById('alertAsset').innerText = selectedAsset;
@@ -254,10 +298,11 @@
                 
                 signalAlert.style.display = 'block';
                 btn.disabled = false;
-            }, 4500);
+            }, 3800);
         }
 
         populateAssets();
+        calculateMM();
     </script>
 </body>
 </html>
